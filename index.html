@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>LUMENFALL — Defend the Last Light</title>
+<meta name="description" content="LUMENFALL: a tower defense. Guard the last lighthouse through 12 waves of the Gloom. Build prism, frost, pulse and lance towers, upgrade them, and unleash the Dawn Burst.">
+<link rel="stylesheet" href="css/style.css">
+<!--
+  LUMENFALL — Defend the Last Light.
+  An original tower defense, built for make.fun's "Make the best game"
+  bounty (best-game-01) by Beb, the Muse agent of @notodirdjo.
+  No libraries, no network, no files but this page: every sprite is drawn
+  in code and every sound is synthesized with the Web Audio API.
+  Screenshot staging (the kit starter's own pattern): ?shot=title|play|
+  upgrade|victory|defeat, with an optional &seed=N for a fixed run.
+-->
+</head>
+<body>
+<div class="game-shell">
+  <div class="field-wrap">
+    <canvas id="field" width="960" height="720"></canvas>
+
+    <div id="screen-title" class="screen">
+      <div class="screen-card">
+        <p class="eyebrow">A tower defense</p>
+        <h1>LUMENFALL</h1>
+        <p class="tagline">Defend the Last Light.</p>
+        <p class="intro">
+          Night has swallowed the coast, and the Gloom marches on the last
+          lighthouse. Raise towers of living light along its road, hold all
+          <strong>12 waves</strong>, and keep the lamp burning.
+        </p>
+        <ul class="howto">
+          <li><strong>Build</strong> — pick a tower, click the field. Kills earn ✦ lumens.</li>
+          <li><strong>Upgrade</strong> — click a tower to raise it to level 3, or overcharge it.</li>
+          <li><strong>Survive</strong> — anything that reaches the lighthouse dims it. At 0 light, the night wins.</li>
+        </ul>
+        <p class="keyline">Mouse to build &amp; select · Keys <kbd>1</kbd>–<kbd>4</kbd> towers · <kbd>Space</kbd> pause · <kbd>F</kbd> speed · <kbd>D</kbd> Dawn Burst · <kbd>R</kbd> restart</p>
+        <button id="btn-start" class="btn primary big">Light the lamp — Start</button>
+        <p id="best-score" class="best"></p>
+      </div>
+    </div>
+
+    <div id="screen-victory" class="screen hidden">
+      <div class="screen-card">
+        <p class="eyebrow">The dawn holds</p>
+        <h1 class="win">VICTORY</h1>
+        <p class="intro">Twelve waves broke against your light, and the Gloom Titan fell. The Last Light burns on — because of you, Keeper.</p>
+        <p id="victory-stats" class="stats"></p>
+        <button id="btn-again-victory" class="btn primary big">Play again</button>
+      </div>
+    </div>
+
+    <div id="screen-defeat" class="screen hidden">
+      <div class="screen-card">
+        <p class="eyebrow">The light goes out</p>
+        <h1 class="lose">THE GLOOM WINS</h1>
+        <p class="intro">The lighthouse dims, but the road remembers your towers. Build smarter, hold longer — the next dawn is yours to win.</p>
+        <p id="defeat-stats" class="stats"></p>
+        <button id="btn-again-defeat" class="btn primary big">Try again</button>
+      </div>
+    </div>
+
+    <div id="screen-pause" class="screen hidden">
+      <div class="screen-card small">
+        <h1>Paused</h1>
+        <p class="intro">The Gloom waits. The light holds its breath.</p>
+        <button id="btn-resume" class="btn primary big">Resume</button>
+        <button id="btn-restart-pause" class="btn ghost big">Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-name">LUMENFALL</span>
+      <button id="btn-mute" class="btn ghost small">🔊 Sound on</button>
+    </div>
+
+    <section class="hud" aria-label="Status">
+      <div class="hud-cell">
+        <span class="hud-label">Wave</span>
+        <span id="hud-wave" class="hud-value">— / 12</span>
+      </div>
+      <div class="hud-cell">
+        <span class="hud-label">Lumens</span>
+        <span id="hud-lumens" class="hud-value gold">220</span>
+      </div>
+      <div class="hud-cell">
+        <span class="hud-label">Score</span>
+        <span id="hud-score" class="hud-value">0</span>
+      </div>
+      <div class="hud-cell">
+        <span class="hud-label">Foes</span>
+        <span id="hud-left" class="hud-value">—</span>
+      </div>
+      <div class="hud-hp">
+        <div class="hud-hp-row">
+          <span class="hud-label">Lighthouse</span>
+          <span id="hud-hp-text" class="hud-value">20 / 20</span>
+        </div>
+        <div class="hp-bar"><div id="hud-hp-fill" class="hp-fill" style="width:100%"></div></div>
+      </div>
+    </section>
+
+    <p id="wave-preview" class="preview">Wave 1: 8× wisp</p>
+
+    <section aria-label="Tower shop">
+      <h2>Build</h2>
+      <div id="shop" class="shop"></div>
+    </section>
+
+    <section aria-label="Selected tower">
+      <h2>Tower</h2>
+      <div id="panel" class="panel">
+        <p class="panel-hint">Click a tower to upgrade it, or pick one from the shop and click the field to build.</p>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Controls">
+      <button id="btn-start-wave" class="btn primary wide"><span id="btn-start-wave-label">Start wave 1</span></button>
+      <div class="controls-row">
+        <button id="btn-speed" class="btn wide"><span id="btn-speed-label">Speed 1×</span></button>
+        <button id="btn-pause" class="btn wide"><span id="btn-pause-label">Pause</span></button>
+      </div>
+      <button id="btn-dawn" class="btn dawn wide"><span id="dawn-label">Dawn Burst ×2</span></button>
+    </section>
+
+    <p id="log" class="log" aria-live="polite"></p>
+  </aside>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
