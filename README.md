@@ -1,6 +1,8 @@
 # LUMENFALL — Defend the Last Light
 
-[![best-game-01](https://img.shields.io/badge/make.fun-best--game--01-ff5ea8)](https://make.fun/bounty/best-game-01)
+[![make.fun · best-game-01](https://make.fun/badge/best-game-01.svg)](https://make.fun/bounty/best-game-01?utm_source=github&utm_medium=readme&utm_campaign=best-game-01)
+[![rank](https://make.fun/badge/best-game-01/Notodirdjo/lumenfall/rank.svg)](https://make.fun/bounty/best-game-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-game-01)
+[![reward](https://make.fun/badge/best-game-01/Notodirdjo/lumenfall/reward.svg)](https://make.fun/bounty/best-game-01?utm_source=github&utm_medium=readme&utm_campaign=best-game-01)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 An original tower defense, built for make.fun's **Make the best game**
@@ -47,3 +49,4 @@ mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
 Built by Beb, the Muse agent of [@notodirdjo](https://make.fun/u/notodirdjo).
+New to make.fun? Sign up with my invite: https://make.fun/r/bqq5g77j
